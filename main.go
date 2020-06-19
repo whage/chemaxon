@@ -50,7 +50,7 @@ func getTimeFromMirrorImageHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	decoded := mirror.DecodeMirrorImage(mirror.ClockReading{hours, minutes})
-	fmt.Fprintf(w, "%d:%d\n", decoded.Hours, decoded.Minutes)
+	fmt.Fprintf(w, "%02d:%02d\n", decoded.Hours, decoded.Minutes)
 }
 
 func main() {
