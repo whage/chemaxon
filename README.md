@@ -10,6 +10,7 @@ ubuntu docker image without the build tools.
 Part of the exercise was to push the resulting docker image to an ECR registry.
 To create an ECR repository, run `terraform apply` in the `terraform/ecr` folder.
 The URL of the newly created docker registry can be viewed by running `terraform output`.
+Requires `terraform 0.12.xx`!
 
 To build the docker image, run build.sh with the image name/tag, like so (with your own ECR URL):
 ```
@@ -47,4 +48,4 @@ It creates a VPC with 2 public and 2 private subnets with the corresponding inte
 and route tables.
 It also creates a VPC endpoint for S3 for accessing S3 buckets without leaving the AWS network.
 
-To deploy, run `terraform apply` in the `terraform/network` folder. The code assumes `terraform 0.12.xx`!
+To deploy, run `terraform apply` in the `terraform/network` folder. Requires `terraform 0.12.xx`!
