@@ -2,7 +2,7 @@
 FROM golang:1.14.4-buster
 WORKDIR /go/src/chemaxon
 COPY . /go/src/chemaxon
-RUN make
+RUN make build
 
 # Use a different, Ubuntu image for hosting the binary
 FROM ubuntu:focal
