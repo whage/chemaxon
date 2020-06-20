@@ -1,7 +1,7 @@
 # Interview exercise for ChemAxon
 
-# 1 - Coding
-The first part was a coding exercise.
+# 1 - Coding and deployment
+The first part was a coding and deployment exercise.
 The code implements the "clock mirror image" problem. It may be packaged as a docker image using the provided Dockerfile.
 The compilation itself takes place in a docker container (official golang image) to make
 sure the build environment is always the same. The compiled binary is then added to an
@@ -21,17 +21,22 @@ After a `docker login` to the ECR registry, we can push the image with
 docker push 583709312004.dkr.ecr.eu-central-1.amazonaws.com/chemaxon:1.0.0
 ```
 
+To deploy the application in a **very minimal** setup, run `terraform apply` in the
+`terraform/application` folder. It requires some variables for the ECR registry and
+the ssh key.
+The HCL files deploy an EC2 instance with a public IP address and start the application
+in a docker container (using EC2 `user_data`) exposed on TCP port 80.
+Port 22 is also open for some ssh debugging.
+
 The compiled binary runs an HTTP server with a single endpoint: `/getTimeFromMirrorImage`.
 It expects its input via query string parameters:
 
 - `hours`
 - `minutes`
 
-The web server listens on the fixed TCP port 61023.
-
 Example call to the HTTP endpoint:
 ```
-curl "localhost:61023/getTimeFromMirrorImage?hours=12&minutes=03"
+curl "35.157.202.253/getTimeFromMirrorImage?hours=12&minutes=03"
 ```
 
 # 2 - AWS network module
