@@ -52,7 +52,7 @@ resource "aws_instance" "web" {
   user_data = <<EOF
     #!/bin/bash
     docker login --username AWS --password ${var.ecr_password} ${var.ecr_registry}
-    docker run --rm -p 80:61023 ${var.ecr_registry}/chemaxon:1.0.0
+    docker run --rm -p 80:61023 ${var.ecr_registry}/sallai-chemaxon:1.0.0
 EOF
 }
 

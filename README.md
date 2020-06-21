@@ -1,43 +1,54 @@
 # Interview exercise for ChemAxon
 
 # 1 - Coding and deployment
-The first part was a coding and deployment exercise.
-The code implements the "clock mirror image" problem. It may be packaged as a docker image using the provided Dockerfile.
-The compilation itself takes place in a docker container (official golang image) to make
-sure the build environment is always the same. The compiled binary is then added to an
-ubuntu docker image without the build tools.
+The first part was a coding and deployment exercise. The code implements the "clock mirror image" problem.
 
-Part of the exercise was to push the resulting docker image to an ECR registry.
+## 1.1 Create ECR registry
 To create an ECR repository, run `terraform apply` in the `terraform/ecr` folder.
 The URL of the newly created docker registry can be viewed by running `terraform output`.
 Requires `terraform 0.12.xx`!
 
-To build the docker image, run build.sh with the image name/tag, like so (with your own ECR URL):
+## 1.2 Build docker image
+To build the docker image, run build.sh with the image name/tag (with your own ECR URL):
 ```
-./build.sh 583709312004.dkr.ecr.eu-central-1.amazonaws.com/chemaxon:1.0.0
+./build.sh 583709312004.dkr.ecr.eu-central-1.amazonaws.com/sallai-chemaxon:1.0.0
 ```
+
+The app is compiled in a docker container (official golang image) to make
+sure the build environment is always the same. The compiled binary is then added to an
+ubuntu docker image without the build tools.
 
 After a `docker login` to the ECR registry, we can push the image with
 ```
-docker push 583709312004.dkr.ecr.eu-central-1.amazonaws.com/chemaxon:1.0.0
+docker push 583709312004.dkr.ecr.eu-central-1.amazonaws.com/sallai-chemaxon:1.0.0
 ```
 
+## 1.3 Deploy the application to AWS
 To deploy the application in a **very minimal** setup, run `terraform apply` in the
 `terraform/application` folder. It requires some variables for the ECR registry and
-the ssh key.
+the ssh key. Ideally, these would be set with some config management tool but the simplest way
+is to set them through environment variables:
+- `TF_VAR_ecr_password`
+- `TF_VAR_ecr_registry`
+- `TF_VAR_key_name`
+
 The HCL files deploy an EC2 instance with a public IP address and start the application
 in a docker container (using EC2 `user_data`) exposed on TCP port 80.
 Port 22 is also open for some ssh debugging.
 
+## 1.4 HTTP endpoint
 The compiled binary runs an HTTP server with a single endpoint: `/getTimeFromMirrorImage`.
 It expects its input via query string parameters:
 
 - `hours`
 - `minutes`
 
+It takes a clock reading as seen in the mirror and returns the "real" clock reading as a string in
+`<hours>:<minutes>` format.
+ 
 Example call to the HTTP endpoint:
 ```
-curl "35.157.202.253/getTimeFromMirrorImage?hours=12&minutes=03"
+curl "http://<server_ip>/getTimeFromMirrorImage?hours=12&minutes=03"
 ```
 
 # 2 - AWS network module

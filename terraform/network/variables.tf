@@ -5,22 +5,22 @@ variable "vpc_name" {
 
 variable "vpc_cidr" {
   type = string
-  default = "101.0.0.0/16"
+  default = "10.0.0.0/16"
 }
 
 variable "pub_subnet_a" {
-  type = map(any)
+  type = map(string)
   default = {
-    cidr = "101.0.0.0/24"
+    cidr = "10.0.0.0/24"
     az = "eu-central-1a"
     name = "public-subnet-a"
   }
 }
 
 variable "pub_subnet_b" {
-  type = map(any)
+  type = map(string)
   default = {
-    cidr = "101.0.1.0/24"
+    cidr = "10.0.1.0/24"
     az = "eu-central-1b"
     name = "public-subnet-b"
   }
@@ -32,18 +32,18 @@ variable "pub_rt_name" {
 }
 
 variable "priv_subnet_a" {
-  type = map(any)
+  type = map(string)
   default = {
-    cidr = "101.0.2.0/24"
+    cidr = "10.0.2.0/24"
     az = "eu-central-1a"
     name = "public-subnet-a"
   }
 }
 
 variable "priv_subnet_b" {
-  type = map(any)
+  type = map(string)
   default = {
-    cidr = "101.0.3.0/24"
+    cidr = "10.0.3.0/24"
     az = "eu-central-1b"
     name = "public-subnet-b"
   }

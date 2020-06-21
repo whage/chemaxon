@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "registry" {
-    name = "chemaxon"
+    name = "sallai-chemaxon"
 }
 
 output "ecr_url" {
