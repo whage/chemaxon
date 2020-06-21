@@ -2,10 +2,10 @@
 set -euo pipefail
 
 if [ $# -lt 1 ]; then
-    echo "Missing docker image argument. Usage: build.sh <docker-image-name-with-tag>."
+    echo "Missing ECR repository name argument. Usage: build.sh <ecr-repository-name>."
     exit 1;
 fi
 
-docker_image=$1
+ecr_repository=$1
 
-docker build -t $docker_image .
+docker build -t "${ecr_repository}:1.0.0" .

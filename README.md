@@ -3,33 +3,34 @@
 # 1 - Coding and deployment
 The first part was a coding and deployment exercise. The code implements the "clock mirror image" problem.
 
-## 1.1 Create ECR registry
-To create an ECR repository, run `terraform apply` in the `terraform/ecr` folder.
-The URL of the newly created docker registry can be viewed by running `terraform output`.
+## 1.1 Create ECR repository
+To create an ECR repository, run `terraform init` and `terraform apply` in the `terraform/ecr` folder.
+The URL of the newly created docker repository can be viewed by running `terraform output`.
 Requires `terraform 0.12.xx`!
 
-## 1.2 Build docker image
-To build the docker image, run build.sh with the image name/tag (with your own ECR URL):
+## 1.2 Build & push docker image
+To build the docker image, run `build.sh` with your own ECR repository UR, for example:
 ```
-./build.sh 583709312004.dkr.ecr.eu-central-1.amazonaws.com/sallai-chemaxon:1.0.0
+./build.sh 583709312004.dkr.ecr.eu-central-1.amazonaws.com/sallai-chemaxon
 ```
 
 The app is compiled in a docker container (official golang image) to make
 sure the build environment is always the same. The compiled binary is then added to an
 ubuntu docker image without the build tools.
 
-After a `docker login` to the ECR registry, we can push the image with
+After a `docker login` to the ECR repository, we must push the image, for example:
 ```
 docker push 583709312004.dkr.ecr.eu-central-1.amazonaws.com/sallai-chemaxon:1.0.0
 ```
 
 ## 1.3 Deploy the application to AWS
-To deploy the application in a **very minimal** setup, run `terraform apply` in the
-`terraform/application` folder. It requires some variables for the ECR registry and
-the ssh key. Ideally, these would be set with some config management tool but the simplest way
-is to set them through environment variables:
+To deploy the application in a **very minimal** setup, run `terraform init` followed by `terraform apply` in the
+`terraform/application` folder. It requires some variables for the ECR repository and
+the ssh key pair (should match an existing EC2 key pair).
+Ideally, these would be set with some config management tool based on the earlier ECR deployment
+but for this exercise, the simplest way to set them is through environment variables:
 - `TF_VAR_ecr_password`
-- `TF_VAR_ecr_registry`
+- `TF_VAR_ecr_repository`
 - `TF_VAR_key_name`
 
 The HCL files deploy an EC2 instance with a public IP address and start the application
@@ -59,4 +60,5 @@ It creates a VPC with 2 public and 2 private subnets with the corresponding inte
 and route tables.
 It also creates a VPC endpoint for S3 for accessing S3 buckets without leaving the AWS network.
 
-To deploy, run `terraform apply` in the `terraform/network` folder. Requires `terraform 0.12.xx`!
+To deploy, run `terraform init` and `terraform apply` in the `terraform/network` folder.
+Requires `terraform 0.12.xx`!
